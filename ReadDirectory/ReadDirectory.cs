@@ -47,8 +47,22 @@ namespace DirectoryStatistic
             Parallel.ForEach(allFiles, file =>
             {
                 lock (exte)
-                { 
+                {
                     exte.Addfile(file);
+                }
+            });
+            return exte;
+        }
+
+        public SimpleFileStorage SortFilesSimplySearch(List<FileInfo> allFiles, string name, string rach)
+        {
+            var exte = new SimpleFileStorage();
+
+            Parallel.ForEach(allFiles, file =>
+            {
+                lock (exte)
+                {
+                    exte.SearchFIleInDirectory(file, name, rach);
                 }
             });
             return exte;
