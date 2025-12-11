@@ -1,9 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using DirectoryStatistic;
+using DirectoryStatistic.InformationPC;
 DirectoryPath PATH = new DirectoryPath();
 ReadDirectory directory = new ReadDirectory();
+SimpleFileStorage directory2 = new SimpleFileStorage();
 SimpleFileStorage simole = new SimpleFileStorage();
-string path = PATH.Path();
+string path = await PATH.Path();
 // ДИАГНОСТИКА: что возвращает метод Path()?
 Console.WriteLine($"=== ДЕБАГ ===");
 Console.WriteLine($"path == null: {path == null}");
@@ -32,18 +34,64 @@ ConsoleKeyInfo keyy;
 do
 {
     keyy = Console.ReadKey(intercept: true);
+
     if (keyy.Key == ConsoleKey.Enter)
     {
-        if (path != null)
+        if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
         {
-            var alldiles = await directory.ReadDirectoryy(path);
-            var sort = directory.SortFilesSimply(alldiles);
-            sort.PrintSimpleStats();
+            Console.WriteLine($"Сканирую папку: {path}");
+
+            var allFiles = await directory.ReadDirectoryy(path);
+            var storage = directory.SortFilesSimply(allFiles);
+            storage.PrintSimpleStats();
+
+            Console.WriteLine("=== ПОИСК ФАЙЛОВ ===");
+            Console.WriteLine("F1 - Поиск файла");
+            Console.WriteLine("ESC - Выйти из поиска");
+            Console.WriteLine("Enter - Повторить сканирование");
+
+            bool inSearchMode = true;
+
+            while (inSearchMode)
+            {
+                var searchKey = Console.ReadKey(intercept: true);
+
+                if (searchKey.Key == ConsoleKey.F1)
+                {
+                    Console.Write("\nВведите имя файла (или Enter для любого): ");
+                    string name = Console.ReadLine();
+
+                    Console.Write("Введите расширение (например .txt, или Enter для любого): ");
+                    string extension = Console.ReadLine();
+
+                    var searchResults = directory.SortFilesSimplySearch(allFiles,name,extension);
+                    searchResults.PrintSearch();
+
+                    Console.WriteLine("F1 - Новый поиск | ESC - Выход | Enter - Повторное сканирование | F2 - Информация о ПК");
+                }
+                else if (searchKey.Key == ConsoleKey.Escape)
+                {
+                    Console.WriteLine("\nВыход из режима поиска");
+                    inSearchMode = false;
+                }
+                else if (searchKey.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine("\nПовторное сканирование...");
+                    inSearchMode = false;
+                }
+            }
         }
         else
         {
-            Console.WriteLine("Путь не найден");
+            Console.WriteLine("Путь не найден или папка не существует");
         }
     }
-}
-while (true);
+    else if (keyy.Key == ConsoleKey.Escape)
+    {
+        Console.WriteLine("\nВыход из программы");
+        break;
+    }
+
+} while (true);
+
+
