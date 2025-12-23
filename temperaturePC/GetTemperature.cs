@@ -1,4 +1,5 @@
-﻿using OpenHardwareMonitor.Hardware;
+﻿using LibreHardwareMonitor.Hardware;
+using LibreHardwareMonitor.Hardware.Cpu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,50 +24,67 @@ namespace DirectoryStatistic.temperaturePC
                 IsControllerEnabled = true,
                 IsBatteryEnabled = true,
             };
-            _computer.Open(true);
+            _computer.Open();
         }
-
         public static Dictionary<string, List<Model>> Getemp()
         {
             try
             {
-                var temperatrure = new Dictionary<string, List<Model>>();
+                var temperatures = new Dictionary<string, List<Model>>();
 
-                if (_computer == null)
-                {
-                    Initialize();
-                }
+                if (_computer == null) Initialize();
 
                 foreach (var hardware in _computer.Hardware)
                 {
                     hardware.Update();
 
-                    foreach (var sensors in hardware.Sensors)
+                    foreach (var sensor in hardware.Sensors)
                     {
-                        if (sensors.SensorType == SensorType.Temperature && sensors.Value.HasValue)
-                        {
-                            if (!temperatrure.ContainsKey(hardware.Name))
-                            {
-                                temperatrure[hardware.Name] = new List<Model>();
-                            }
 
-                            temperatrure[hardware.Name].Add(new Model
+                        // 1. Официальный температурный датчик
+                        bool isTempByType = (int)sensor.SensorType == 4;
+
+                        // 2. Имя содержит указание на температуру
+                        bool isTempByName = sensor.Name.ToLower().Contains("temp") ||
+                                           sensor.Name.Contains("°C") ||
+                                           sensor.Name.Contains("Core") && !sensor.Name.Contains("Clock") ||
+                                           sensor.Name.Contains("Package") ||
+                                           sensor.Name.Contains("Hot Spot");
+
+                        // 3. Значение в диапазоне температур (10-120°C)
+                        bool isTempByValue = sensor.Value.HasValue &&
+                                            sensor.Value > 10 &&
+                                            sensor.Value < 120 &&
+                                            !sensor.Name.ToLower().Contains("fan") &&
+                                            !sensor.Name.ToLower().Contains("volt") &&
+                                            !sensor.Name.ToLower().Contains("power");
+
+                        if ((isTempByType || isTempByName || isTempByValue) &&
+                            sensor.Value.HasValue)
+                        {
+                            if (!temperatures.ContainsKey(hardware.Name))
+                                temperatures[hardware.Name] = new List<Model>();
+
+                            temperatures[hardware.Name].Add(new Model
                             {
-                                Name = hardware.Name,
-                                Value = sensors.Value.Value,
-                                Min = sensors.Min.Value,
-                                Max = sensors.Max.Value
+                                Name = sensor.Name,
+                                Value = sensor.Value.Value,
+                                Min = sensor.Min ?? 0,
+                                Max = sensor.Max ?? 0
                             });
                         }
                     }
                 }
-                return temperatrure;
+
+                return temperatures;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine("Не получилось получить температуру  датчиков" + ex.Message);
+                Console.WriteLine("Ошибка получения температур: " + ex.Message);
                 return null;
             }
         }
+
     }
 }
+
