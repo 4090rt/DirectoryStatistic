@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DirectoryStatistic.temperaturePC
+{
+    public class Model
+    {
+        public string Name { get; set; }
+        public float Value { get; set; }
+        public float Min { get; set; }
+        public float Max { get; set; }
+    }
+}
