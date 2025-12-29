@@ -1,13 +1,7 @@
 🔍 PCA - Portable Computer Analyzer
 <div align="center">
-https://via.placeholder.com/800x200/0066cc/ffffff?text=PCA+-+%D0%90%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80+%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%D0%B0
 Мощный портативный инструмент для комплексной диагностики и анализа системы
-
-https://img.shields.io/badge/Windows-10%252F11-blue?logo=windows
-https://img.shields.io/badge/%D0%9F%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B0-x64-important
-https://img.shields.io/badge/%D0%A2%D1%80%D0%B5%D0%B1%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%9F%D1%80%D0%B0%D0%B2%D0%B0+%D0%90%D0%B4%D0%BC%D0%B8%D0%BD%D0%B8%D1%81%D1%82%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B0-red
-https://img.shields.io/badge/.NET-8.0-512bd4?logo=dotnet
-https://img.shields.io/badge/%D0%AF%D0%B7%D1%8B%D0%BA-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-success
+<img width="488" height="135" alt="image" src="https://github.com/user-attachments/assets/8236a844-a32e-4b92-8f7f-37037fcd2669" />
 
 </div>
 🚀 Обзор
@@ -35,7 +29,7 @@ text
 📊 Фильтрация по имени, расширению и размеру
 ⏱️ Быстрый поиск с индикацией прогресса
 📁 Поддержка масок и шаблонов поиска
-https://via.placeholder.com/600x300/2d2d2d/ffffff?text=%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%88%D0%BE%D1%82+%D0%BF%D0%BE%D0%B8%D1%81%D0%BA%D0%B0+%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2
+<img width="329" height="577" alt="image" src="https://github.com/user-attachments/assets/f4e89668-8cbb-4c0b-90ee-ad60fb423a73" />
 
 🌐 Информация о сетевых соединениях
 text
@@ -44,7 +38,8 @@ text
 📶 Статус сетевых интерфейсов
 🔗 Статистика подключений и трафика
 🛡️ Информация о брандмауэре
-https://via.placeholder.com/600x300/2d2d2d/ffffff?text=%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%88%D0%BE%D1%82+%D1%81%D0%B5%D1%82%D0%B5%D0%B2%D0%BE%D0%B9+%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D0%B8%D0%B8
+<img width="409" height="189" alt="image" src="https://github.com/user-attachments/assets/78279070-b748-4602-a98a-152cbbf88d2e" />
+
 
 🖥️ Информация о системе и ПК
 text
@@ -53,7 +48,9 @@ text
 💾 Сведения о дисках и хранилищах
 📋 Характеристики материнской платы
 🎮 Данные о видеокарте
-https://via.placeholder.com/600x300/2d2d2d/ffffff?text=%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%88%D0%BE%D1%82+%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BD%D0%BE%D0%B9+%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D0%B8%D0%B8
+<img width="613" height="377" alt="image" src="https://github.com/user-attachments/assets/970db818-732d-4e6b-b01e-dc235aabf7ef" />
+<img width="658" height="131" alt="image" src="https://github.com/user-attachments/assets/7a98315b-a494-4670-9e6c-1a28168979b9" />
+
 
 🌡️ Мониторинг температуры с датчиков
 text
@@ -62,14 +59,16 @@ text
 💾 Температура накопителей
 📊 Графики изменения температуры
 ⚠️ Предупреждения о перегреве
-https://via.placeholder.com/600x300/2d2d2d/ffffff?text=%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%88%D0%BE%D1%82+%D1%82%D0%B5%D0%BC%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%BD%D1%8B%D1%85+%D0%B4%D0%B0%D1%82%D1%87%D0%B8%D0%BA%D0%BE%D0%B2
+<img width="380" height="503" alt="image" src="https://github.com/user-attachments/assets/d942698a-1527-4867-9528-5195ee110f1b" />
+
 
 📈 Топ процессов по нагрузке
 text
 ⚡ Топ-10 процессов по загрузке CPU
 💾 Топ-10 процессов по потреблению памяти
 📊 статистика по каждому процессу
-https://via.placeholder.com/600x300/2d2d2d/ffffff?text=%D0%A1%D0%BA%D1%80%D0%B8%D0%BD%D1%88%D0%BE%D1%82+%D1%82%D0%BE%D0%BF%D0%B0+%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D0%BE%D0%B2
+<img width="345" height="298" alt="image" src="https://github.com/user-attachments/assets/a38909fe-d575-46ef-9434-7454d0f3c31c" />
+
 
 📥 Установка и запуск
 Требования
