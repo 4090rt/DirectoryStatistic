@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -13,7 +14,7 @@ namespace DirectoryStatistic.Http.Parser
         private readonly ILogger _logger;
 
         public Parsing(ILogger logger)
-        { 
+        {
             _logger = logger;
         }
 
@@ -27,27 +28,43 @@ namespace DirectoryStatistic.Http.Parser
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
-                var result = await JsonSerializer.DeserializeAsync<List<T>>(stream, options);
+                // Читаем JSON как строку для определения типа (объект или массив)
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                var json = await reader.ReadToEndAsync();
 
-                if (result != null)
+                // Проверяем, начинается ли JSON с '[' (массив) или '{' (объект)
+                var trimmedJson = json.Trim();
+                if (trimmedJson.StartsWith("["))
                 {
-                    return result;
+                    // Это массив
+                    var result = await JsonSerializer.DeserializeAsync<List<T>>(new MemoryStream(Encoding.UTF8.GetBytes(json)), options);
+                    if (result != null)
+                    {
+                        return result;
+                    }
                 }
-                else
+                else if (trimmedJson.StartsWith("{"))
                 {
-                    _logger.LogError("Результат парсинг пуст!");
-                    throw new Exception("Ошибка парсинга");
+                    // Это одиночный объект - оборачиваем в список
+                    var item = await JsonSerializer.DeserializeAsync<T>(new MemoryStream(Encoding.UTF8.GetBytes(json)), options);
+                    if (item != null)
+                    {
+                        return new List<T> { item };
+                    }
                 }
+
+                _logger.LogError("Результат парсинга пуст или имеет неверный формат!");
+                throw new Exception("Ошибка парсинга: неверный формат JSON");
             }
             catch (JsonException ex)
             {
-                _logger.LogError("Возникло исключение при работе с JSON" + ex.Message + ex.StackTrace);
-                throw new Exception("Исключениепарсинга. Ошибка Json");
+                _logger.LogError("Возникло исключение при работе с JSON: " + ex.Message);
+                throw new Exception("Исключение парсинга. Ошибка Json", ex);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Возникло исключение" + ex.Message + ex.StackTrace);
-                throw new Exception("Исключение при парсинге");
+                _logger.LogError("Возникло исключение: " + ex.Message);
+                throw new Exception("Исключение при парсинге", ex);
             }
         }
     }

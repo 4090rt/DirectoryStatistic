@@ -2,6 +2,7 @@
 using DirectoryStatistic.Http.Parser;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,6 @@ namespace DirectoryStatistic.Http.HttpRequest
 {
     public class HTTPZapr
     {
-        string Url = "https://ipinfo.io/json";
-        private readonly object _lock = new object();
 
         private readonly ILogger _logger;
         private readonly IMemoryCache _memorycache;
@@ -31,9 +30,100 @@ namespace DirectoryStatistic.Http.HttpRequest
             _parse = parsing;
             _httpClientFactory = httpClientFactory;
         }
-        public async Task<List<DataProviderInfo>> RequestCaching()
-        { 
+        public async Task<List<DataProviderInfo>> RequestCaching(CancellationToken cancellation = default)
+        {
+            string key_cache = $"key_cached";
+            string stalecache = $"stale{key_cache}";
+            List<DataProviderInfo> oldcache = null;
+            if (_memorycache.TryGetValue(key_cache, out List<DataProviderInfo> cached))
+            {
+                string log = $"📦 Данные из кэша для {cached}";
+                oldcache = cached;
+                return cached;
+            }
+            await _semaphore.WaitAsync(cancellation);
+            try
+            {
+                if (_memorycache.TryGetValue(key_cache, out List<DataProviderInfo> cached2))
+                {
+                    return cached2;
+                }
 
+                var fallback = Policy<List<DataProviderInfo>>
+                    .Handle<Exception>()
+                    .OrResult(r => r == null)
+                    .FallbackAsync(
+                    fallbackAction: async (outcome, context, ctx) =>
+                    {
+                        var exception = outcome.Exception;
+                        var IsEmpty = outcome.Result == null;
+
+                        if (exception != null)
+                        {
+                            _logger.LogWarning($"⚠️ Fallback by exception: {exception.Message}");
+                        }              
+                        if (IsEmpty)
+                        {
+                            _logger.LogWarning($"⚠️ Fallback by empty result");
+                        }
+                        if (oldcache != null)
+                        {
+                            _logger.LogInformation("✅ Fallback: возвращаю старые данные из кэша");
+                            return oldcache;
+                        }
+                        if (_memorycache.TryGetValue(stalecache, out List<DataProviderInfo> stalecached))
+                        {
+                            _logger.LogInformation($"✅ Returning stale copy for {stalecached}");
+                            return stalecached;
+                        }
+                        else
+                        {
+                            _logger.LogWarning("⚠️ Fallback: кэш пуст, возвращаю default");
+                            return default;
+                        }
+                    },
+                    onFallbackAsync: async (outcome, ctx) =>
+                    {
+                        _logger.LogError($"🆘 Fallback сработал: {outcome.Exception?.Message}");
+                        await Task.CompletedTask;
+                    });
+
+                var fallbackresult = await fallback.ExecuteAsync(async () =>
+                {
+                    var result = await Request(cancellation);
+
+                    if (result != null)
+                    {
+                        var options = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(10))
+                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+
+                        _memorycache.Set(key_cache,result, options);
+
+                        var staleoptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+
+                        _logger.LogInformation("✅ Cached fresh data for {CacheCode}", key_cache);
+                        _memorycache.Set(stalecache, result, staleoptions);
+                        return result;
+                    }
+                    else
+                    {
+                        _logger.LogInformation("✅ Using cached data for {CacheCode}", key_cache);
+                        return default;
+                    }
+                });
+                return fallbackresult;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Возникло исключение" + ex.Message, ex.StackTrace);
+                return new List<DataProviderInfo>();
+            }
+            finally
+            { 
+                _semaphore.Release();
+            }
         }
         public async Task<List<DataProviderInfo>> Request(CancellationToken cancellation = default)
         {
