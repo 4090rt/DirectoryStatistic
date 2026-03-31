@@ -31,7 +31,7 @@ namespace DirectoryStatistic.InformationPC
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Не удалось получить информацию о оперативной памяти" + ex.Message);
+                Console.WriteLine("Не удалось получить информацию о оперативной памяти" + ex.Message + ex.StackTrace);
             }
         }
     }

@@ -11,10 +11,10 @@ namespace DirectoryStatistic.Http.JitterClass
 {
     public class Jitter
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<Jitter> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpRequestPing _httpRequestPing;
-        public Jitter(ILogger logger, IHttpClientFactory httpClientFactory, HttpRequestPing httpRequestPing)
+        public Jitter(ILogger<Jitter> logger, IHttpClientFactory httpClientFactory, HttpRequestPing httpRequestPing)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;

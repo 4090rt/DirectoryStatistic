@@ -31,7 +31,7 @@ namespace DirectoryStatistic.InformationPC
             }
             catch(Exception ex) 
             {
-                Console.WriteLine("Не удалось получить информацию о видеоадаптере" + ex.Message);
+                Console.WriteLine("Не удалось получить информацию о видеоадаптере" + ex.Message + ex.StackTrace);
             }
         }
     }

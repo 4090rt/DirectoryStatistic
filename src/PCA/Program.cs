@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using DirectoryStatistic;
+using DirectoryStatistic.FilesWork;
 using DirectoryStatistic.Http.HttpRequest;
 using DirectoryStatistic.Http.JitterClass;
 using DirectoryStatistic.InformationPC;
@@ -88,10 +88,11 @@ class Program
         service.AddSingleton<TopProcess>();
 
         var serviceProvider = service.BuildServiceProvider();
+        var jitter = serviceProvider.GetRequiredService<Jitter>();
 
         var logger = serviceProvider.GetRequiredService<ILogger<DirectoryPath>>();
         var memoryCache = serviceProvider.GetRequiredService<IMemoryCache>();
-        DirectoryPath PATH = new DirectoryPath(serviceProvider, logger, memoryCache);
+        DirectoryPath PATH = new DirectoryPath(serviceProvider, logger, memoryCache, jitter);
         ReadDirectory directory = new ReadDirectory();
         SimpleFileStorage directory2 = new SimpleFileStorage();
         SimpleFileStorage simole = new SimpleFileStorage();
@@ -186,7 +187,7 @@ class Program
                                 Console.WriteLine("\n=== НАЖМИТЕ ЛЮБУЮ КЛАВИШУ ДЛЯ ВОЗВРАТА ===");
                                 Console.ReadKey(intercept: true);
                             }
-                            else if (searchKey.Key == ConsoleKey.F3)
+                            else if (searchKey.Key == ConsoleKey.F1)
                             {
                                 Console.Clear();
                                 Console.WriteLine("=== ИНФОРМАЦИЯ О СЕТИ ===\n");
@@ -197,19 +198,11 @@ class Program
                                 var setiInfo = new SetiSettings();
                                 setiInfo.Setiinformation();
 
-                                Console.WriteLine("\n=== НАЖМИТЕ ЛЮБУЮ КЛАВИШУ ДЛЯ ВОЗВРАТА ===");
-                                Console.ReadKey(intercept: true);
-                            }
-                            else if (searchKey.Key == ConsoleKey.F4)
-                            {
-                                Console.Clear();
                                 Console.WriteLine("=== ЗАМЕР ПИНГА И ОТКЛОНЕНИЯ ===\n");
-
-                                var jitter = serviceProvider.GetRequiredService<Jitter>();
 
                                 Console.WriteLine("Замер пинга до Google (5 запросов)...");
                                 var jitterResult = await jitter.JitterSc("https://www.google.com", 5);
-                                
+
                                 Console.WriteLine($"\nКоличество замеров: {jitterResult.Count}");
                                 Console.WriteLine($"Макс. пинг: {jitterResult.MaxMs} мс");
                                 Console.WriteLine($"Мин. пинг: {jitterResult.MinMS} мс");
@@ -217,7 +210,7 @@ class Program
                                 Console.WriteLine($"Jitter (отклонение): {jitterResult.JitterMs:F2} мс");
                                 Console.WriteLine($"Общее время замера: {jitterResult.Timer} мс");
 
-                                Console.WriteLine("\n=== НАЖМИТЕ ЛЮБУЮ КЛАВИШУ ДЛЯ ВОЗВРАТА ===");
+                            Console.WriteLine("\n=== НАЖМИТЕ ЛЮБУЮ КЛАВИШУ ДЛЯ ВОЗВРАТА ===");
                                 Console.ReadKey(intercept: true);
                             }
                             else if (searchKey.Key == ConsoleKey.F5)

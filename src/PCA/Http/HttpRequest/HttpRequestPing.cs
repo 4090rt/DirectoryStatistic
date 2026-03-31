@@ -12,9 +12,9 @@ namespace DirectoryStatistic.Http.HttpRequest
 {
     public class HttpRequestPing
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<HttpRequestPing> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        public HttpRequestPing(IHttpClientFactory httpClientFactory, ILogger logger)
+        public HttpRequestPing(IHttpClientFactory httpClientFactory, ILogger<HttpRequestPing> logger)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;

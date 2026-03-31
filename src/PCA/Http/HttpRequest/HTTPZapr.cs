@@ -17,13 +17,13 @@ namespace DirectoryStatistic.Http.HttpRequest
     public class HTTPZapr
     {
 
-        private readonly ILogger _logger;
+        private readonly ILogger<HTTPZapr> _logger;
         private readonly IMemoryCache _memorycache;
         private readonly Parsing _parse;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        public HTTPZapr(ILogger logger, IMemoryCache memoryCache, Parsing parsing, IHttpClientFactory httpClientFactory, SemaphoreSlim semaphore)
+        public HTTPZapr(ILogger<HTTPZapr> logger, IMemoryCache memoryCache, Parsing parsing, IHttpClientFactory httpClientFactory, SemaphoreSlim semaphore)
         {
             _logger = logger;
             _memorycache = memoryCache;
